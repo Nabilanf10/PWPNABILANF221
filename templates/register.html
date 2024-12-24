@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+</head>
+<style>
+    .a1 {
+        display: grid; 
+        grid-auto-flow:column;
+    }
+
+    .a2 {
+        color: rgb(192, 134, 192);
+        background-color: #eecce5;
+        background-size: cover;
+        background-repeat: no-repeat ;
+        text-align: center;
+        color: rgb(255, 255, 255);
+    }
+
+    .a3 {
+        width: 70%;
+        height: 70%;
+        background-color:transparent;
+        border-radius: 5px;
+        border: 2px solid rgb(67, 58, 58);
+    }
+
+    .a4 {
+        width: 70%;
+        height: 70%;
+    }
+
+    .a5 {
+        font-size: 100%;
+    }
+    .a6 {
+        width: 350px;
+        height: 250px;
+        background-color: rgba(216, 123, 190, 0.68);
+        margin: auto;
+        border-radius: 5px;
+        border: 2px solid rgb(67, 58, 58);
+    }
+
+    .a7 {
+        width: 70%;
+        height: 70%;
+        background-color:transparent;
+        margin: auto;
+        border-radius: 5px;
+        border: 2px solid rgb(67, 58, 58);
+    }
+
+    .a8{
+        background-color: rgba(203, 30, 191, 0.756);
+        color: white;
+    }
+
+</style>
+<body class="a2">
+        <h1 style="text-align: center; color: rgb(67, 58, 58);">Register</h1>
+    <div class="a6">
+        <form action="home.html">
+            <br>
+            <div>
+            <label for="fname"class="a5">Username:</label> <br>
+            <input type="text" id="fname" name="fname" class="a3" > <br>
+            </div>
+            <div>
+            <label for="fname"class="a5">Your email:</label> <br>
+            <input type="text" id="fname" name="fname" class="a3" > <br>
+            </div>
+            <div>
+            <label for="lname" class="a4">Password</label> <br>
+            <input type="password" id="fname" name="lname" class="a7"> <br>
+            </div> <br>
+            <div> <br>
+                <input type="submit" name="submit" value="Register" style="text-align: center;" class="a8"> <br>
+                <p class="text-center mt-3">Already have an account? <a href="/login">Login here</a></p>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
