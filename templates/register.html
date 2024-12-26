@@ -47,11 +47,8 @@
         .btn-submit:hover {
             background-color: rgba(203, 30, 191, 0.9);
         }
-        .flash-messages ul {
-            list-style-type: none;
-            padding: 0;
-            color: red;
-            margin-bottom: 15px;
+        .flash-messages {
+            display: none; /* Sembunyikan elemen flash messages */
         }
     </style>
 </head>
@@ -59,17 +56,15 @@
     <h1>Register</h1>
     <div class="container">
         <!-- Flash messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
         <div class="flash-messages">
-            <ul>
-                {% for category, message in messages %}
-                <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            {{ message }}
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
         </div>
-        {% endif %}
-        {% endwith %}
 
         <form action="{{ url_for('register') }}" method="POST">
             <div class="form-control">
