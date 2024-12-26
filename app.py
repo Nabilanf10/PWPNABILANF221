@@ -37,21 +37,26 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Diperlukan untuk flash messages
 
 @app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        # Simpan data registrasi (contoh sederhana, belum ada validasi database)
+        # Logika untuk registrasi pengguna
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-
+        
+        # Contoh validasi sederhana
         if not username or not email or not password:
             flash('All fields are required!', 'error')
-        else:
-            flash('Registration successful!', 'success')
-            return redirect(url_for('login'))  # Arahkan ke halaman login setelah berhasil
-
-    return render_template('register.html')  # Render file HTML
-
+            return redirect(url_for('register'))
+        
+        # Simpan data pengguna (hash password)
+        hashed_password = generate_password_hash(password)
+        # Tambahkan ke database (contoh saja)
+        flash('Registration successful!', 'success')
+        return redirect(url_for('login'))
+    
+    return render_template('register.html')
 
 # Halaman login
 @app.route('/login', methods=['GET', 'POST'])
