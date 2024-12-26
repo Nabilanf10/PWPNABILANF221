@@ -24,17 +24,21 @@
         .form-control {
             width: 100%;
             margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Pusatkan label dan input secara horizontal */
+        }
+        .form-control label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-align: center; /* Agar teks label sejajar di tengah */
         }
         .form-control input {
             width: 100%;
             padding: 10px;
             border: 2px solid #433a3a;
             border-radius: 5px;
-        }
-        .form-control label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
         }
         .btn-submit {
             background-color: rgba(203, 30, 191, 0.756);
@@ -49,6 +53,16 @@
         }
         .flash-messages {
             display: none; /* Sembunyikan elemen flash messages */
+        }
+        p {
+            margin-top: 15px;
+        }
+        a {
+            color: #433a3a;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -65,7 +79,6 @@
             {% endif %}
             {% endwith %}
         </div>
-
         <form action="{{ url_for('register') }}" method="POST">
             <div class="form-control">
                 <label for="username">Username</label>
@@ -81,6 +94,7 @@
             </div>
             <button type="submit" class="btn-submit">Register</button>
         </form>
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
     </div>
 </body>
 </html>
