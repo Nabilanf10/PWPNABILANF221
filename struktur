@@ -1,0 +1,11 @@
+project/
+│
+├── app.py
+├── templates/
+│   ├── login.html
+│   ├── register.html
+│   ├── dashboard.html
+│   ├── add_user.html
+│   └── edit_user.html
+├── static/     
+└── database.db   
