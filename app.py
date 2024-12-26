@@ -88,28 +88,22 @@ def dashboard():
 @app.route('/add_user', methods=['GET', 'POST'])
 def add_user():
     if 'user_id' not in session:
-        flash('Please login first', 'warning')
+        flash('Please log in to access this page.', 'warning')
         return redirect(url_for('login'))
 
     if request.method == 'POST':
         username = request.form['username']
-        email = request.form['email']
         password = request.form['password']
-        hashed_password = generate_password_hash(password, method='sha256')
+        hashed_password = generate_password_hash(password)
 
-        if User.query.filter_by(username=username).first():
-            flash('Username already exists', 'danger')
-            return redirect(url_for('add_user'))
-        if User.query.filter_by(email=email).first():
-            flash('Email already exists', 'danger')
-            return redirect(url_for('add_user'))
-
-        new_user = User(username=username, email=email, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        flash('User added successfully', 'success')
-        return redirect(url_for('dashboard'))
-
+        new_user = User(username=username, password=hashed_password)
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('User added successfully!', 'success')
+            return redirect(url_for('dashboard'))
+        except:
+            flash('Error adding user.', 'danger')
     return render_template('add_user.html')
 
 # Edit user
