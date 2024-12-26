@@ -2,8 +2,8 @@ project/
 │
 ├── app.py
 ├── templates/
-│   ├── login.html
 │   ├── register.html
+│   ├── login.html
 │   ├── dashboard.html
 │   ├── add_user.html
 │   └── edit_user.html
