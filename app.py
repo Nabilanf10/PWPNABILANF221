@@ -9,14 +9,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Database Model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), nullable=False, unique=True)
-    role = db.Column(db.String(50), nullable=False)
-    email = db.Column(db.String(120), nullable=False, unique=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    role = db.Column(db.String(20), nullable=False, default='user')
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
 
+    def __repr__(self):
+        return f'<User {self.username}>'
+    
 @app.route('/')
 def home():
     return redirect(url_for('login'))
@@ -27,56 +29,68 @@ def register():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        role = 'user' 
+
+        if User.query.filter_by(username=username).first():
+            flash('Username is already taken.', 'danger')
+            return render_template('register.html')
+
+        if User.query.filter_by(email=email).first():
+            flash('Email is already registered.', 'danger')
+            return render_template('register.html')
 
         hashed_password = generate_password_hash(password, method='sha256')
+        new_user = User(username=username, email=email, password_hash=hashed_password, role='user')
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Registration successful! Please log in.', 'success')
+        return redirect(url_for('login'))
 
-        # Buat user baru
-        new_user = User(username=username, email=email, password_hash=hashed_password, role=role)
-
-        try:
-            db.session.add(new_user)
-            db.session.commit()
-            flash('User registered successfully!', 'success')
-            return redirect(url_for('login'))
-        except Exception as e:
-            flash('Error: User already exists or invalid input.', 'danger')
-            return render_template('register.html')
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-
+        email = request.form['email']
+        password = request.form['password']
         user = User.query.filter_by(email=email).first()
+
         if user and check_password_hash(user.password_hash, password):
             session['user_id'] = user.id
+            session['username'] = user.username
+            session['role'] = user.role
             flash('Login successful!', 'success')
             return redirect(url_for('dashboard'))
         else:
             flash('Invalid email or password.', 'danger')
-            return redirect(url_for('login'))
+            return render_template('login.html')
+
     return render_template('login.html')
 
 @app.route('/dashboard')
 def dashboard():
     if 'user_id' not in session:
-        flash('Please login to access the dashboard.', 'danger')
+        flash('Please log in to access this page.', 'warning')
+        return redirect(url_for('login'))
+    
+    if session.get('role') != 'admin':
+        flash('Access denied! Admins only.', 'danger')
         return redirect(url_for('login'))
 
     users = User.query.all()
     return render_template('dashboard.html', users=users)
 
-@app.route('/add_user')
-def add_user():
-    return render_template('add_user.html')
 
-@app.route('/edit_user/<int:user_id>')
-def edit_user(user_id):
-    user = User.query.get_or_404(user_id)
-    return render_template('edit_user.html', user=user)
+@app.route('/add_default_user')
+def add_default_user():
+    new_user = User(username='john_doe', email='john@example.com', role='admin', password_hash=generate_password_hash('password123', method='sha256'))
+    db.session.add(new_user)
+    db.session.commit()
+    return "Default user added successfully!"
+
+@app.route('/users')
+def get_users():
+    users = User.query.all()
+    return {user.id: {"username": user.username, "email": user.email, "role": user.role} for user in users}
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
@@ -92,70 +106,60 @@ def logout():
     flash('You have been logged out.', 'success')
     return redirect(url_for('login'))
 
-@app.route('/add_user', methods=['GET', 'POST'])
+@app.route('/add', methods=['GET', 'POST'])
 def add_user():
-    if 'user_id' not in session:
-        flash('Please log in to access this page.', 'warning')
-        return redirect(url_for('login'))
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Access denied!', 'danger')
+        return redirect(url_for('dashboard'))
 
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
-        password = request.form['password']
         role = request.form['role']
+        password = request.form['password']
         hashed_password = generate_password_hash(password, method='sha256')
 
-        new_user = User(username=username, email=email, password_hash=hashed_password, role=role)
+        new_user = User(username=username, email=email, role=role, password_hash=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('User added successfully!', 'success')
+        return redirect(url_for('dashboard'))
 
-        try:
-            db.session.add(new_user)
-            db.session.commit()
-            flash('User added successfully!', 'success')
-            return redirect(url_for('dashboard'))
-        except Exception as e:
-            flash('Error: User already exists or invalid input.', 'danger')
+    return render_template('add.html')
 
-    return render_template('add_user.html')
-
-@app.route('/edit_user/<int:id>', methods=['GET', 'POST'])
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_user(id):
-    if 'user_id' not in session:
-        flash('Please log in to access this page.', 'warning')
-        return redirect(url_for('login'))
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Access denied!', 'danger')
+        return redirect(url_for('dashboard'))
 
     user = User.query.get_or_404(id)
 
     if request.method == 'POST':
         user.username = request.form['username']
-        user.role = request.form['role']
         user.email = request.form['email']
-        if request.form['password']:
-            user.password_hash = generate_password_hash(request.form['password'], method='sha256')
+        user.role = request.form['role']
+        password = request.form['password']
 
-        try:
-            db.session.commit()
-            flash('User updated successfully!', 'success')
-            return redirect(url_for('dashboard'))
-        except:
-            flash('Error: Could not update user.', 'danger')
+        if password:
+            user.password_hash = generate_password_hash(password, method='sha256')
 
-    return render_template('edit_user.html', user=user)
+        db.session.commit()
+        flash('User updated successfully!', 'success')
+        return redirect(url_for('dashboard'))
 
-@app.route('/delete_user/<int:id>', methods=['POST'])
+    return render_template('edit.html', user=user)
+
+@app.route('/delete/<int:id>', methods=['POST'])
 def delete_user(id):
-    if 'user_id' not in session:
-        flash('Please log in to access this page.', 'warning')
-        return redirect(url_for('login'))
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Access denied!', 'danger')
+        return redirect(url_for('dashboard'))
 
     user = User.query.get_or_404(id)
-
-    try:
-        db.session.delete(user)
-        db.session.commit()
-        flash('User deleted successfully!', 'success')
-    except:
-        flash('Error: Could not delete user.', 'danger')
-
+    db.session.delete(user)
+    db.session.commit()
+    flash('User deleted successfully!', 'success')
     return redirect(url_for('dashboard'))
 
 @app.route('/logout')

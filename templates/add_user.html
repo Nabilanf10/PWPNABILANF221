@@ -5,103 +5,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add User</title>
+    <style>
+        /* Konsistensi dengan desain lainnya */
+        .a2 {
+            color: rgb(192, 134, 192);
+            background-color: #eecce5;
+            background-size: cover;
+            background-repeat: no-repeat;
+            text-align: center;
+        }
+
+        .a6 {
+            max-width: 350px;
+            height: auto;
+            padding: 20px 10px;
+            background-color: rgba(216, 123, 190, 0.68);
+            margin: auto;
+            border-radius: 5px;
+            border: 2px solid rgb(67, 58, 58);
+        }
+
+        .a3 {
+            width: 70%;
+            height: 70%;
+            background-color: transparent;
+            border-radius: 5px;
+            border: 2px solid rgb(67, 58, 58);
+        }
+
+        .a8 {
+            background-color: rgba(203, 30, 191, 0.756);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .a8:hover {
+            background-color: rgba(180, 20, 170, 0.8);
+        }
+
+        input {
+            padding: 10px;
+        }
+    </style>
 </head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #eecce5;
-        color: rgb(255, 255, 255);
-        margin: 0;
-        padding: 0;
-        text-align: center;
-    }
 
-    .container {
-        max-width: 350px;
-        margin: 50px auto;
-        background-color: rgba(216, 123, 190, 0.68);
-        border-radius: 8px;
-        border: 2px solid rgb(67, 58, 58);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-    }
-
-    h2 {
-        margin-bottom: 20px;
-        color: rgb(67, 58, 58);
-    }
-
-    label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: bold;
-        color: rgb(255, 255, 255);
-        text-align: left;
-    }
-
-    input, select {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 2px solid rgb(67, 58, 58);
-        border-radius: 5px;
-        background-color: transparent;
-        color: rgb(255, 255, 255);
-    }
-
-    button {
-        width: 100%;
-        padding: 10px;
-        background-color: rgba(203, 30, 191, 0.756);
-        border: none;
-        border-radius: 5px;
-        color: white;
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: #c019a3;
-    }
-
-    .back-link {
-        margin-top: 10px;
-    }
-
-    .back-link a {
-        color: rgba(203, 30, 191, 0.756);
-        text-decoration: none;
-    }
-
-    .back-link a:hover {
-        text-decoration: underline;
-    }
-</style>
-
-<body>
-    <div class="container">
-        <h2>Add a New User</h2>
+<body class="a2">
+    <h1 style="color: black;">Add New User</h1>
+    <div class="a6">
         <form action="/add_user" method="POST">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" required>
-
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
-
-            <label for="role">Role</label>
-            <select id="role" name="role">
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-            </select>
-
-            <button type="submit">Add User</button>
+            <h2 style="text-align: center; color: black;">Enter User Information</h2>
+            <div>
+                <label for="username" style="color: black;">Username:</label> <br>
+                <input type="text" id="username" name="username" class="a3" required> <br>
+            </div>
+            <div>
+                <label for="email" style="color: black;">Email:</label> <br>
+                <input type="email" id="email" name="email" class="a3" required> <br>
+            </div>
+            <div>
+                <label for="password"style="color: black;">Password:</label> <br>
+                <input type="password" id="password" name="password" class="a3" required> <br>
+            </div>
+            <br>
+            <div>
+                <input type="submit" name="submit" value="Add User" class="a8"> <br><br>
+                <a href="/dashboard" style="color: white;">Cancel</a>
+            </div>
         </form>
-        <div class="back-link">
-            <a href="/dashboard">Back to Dashboard</a>
-        </div>
     </div>
 </body>
 

@@ -1,6 +1,6 @@
 project/
 ├── app.py
-├── users.db
+├── forms.py
 ├── templates/
 │   ├── base.html
 │   ├── register.html
@@ -8,6 +8,7 @@ project/
 │   ├── dashboard.html
 │   ├── add_user.html
 │   ├── edit_user.html
+├── users.db
 ├── migrations/
 ├── requirements.txt
 └── README.md
