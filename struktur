@@ -1,11 +1,13 @@
 project/
-│
 ├── app.py
+├── users.db
 ├── templates/
+│   ├── base.html
 │   ├── register.html
 │   ├── login.html
 │   ├── dashboard.html
 │   ├── add_user.html
-│   └── edit_user.html
-├── static/     
-└── database.db   
+│   ├── edit_user.html
+├── migrations/
+├── requirements.txt
+└── README.md

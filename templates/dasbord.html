@@ -1,39 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #6c63ff;
+            color: #fff;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            background-color: #6c63ff;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #574b9d;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            display: block;
+            width: fit-content;
+            margin: 10px auto;
+            background-color: #e67e22;
+        }
+
+        .logout-btn:hover {
+            background-color: #d35400;
+        }
+
+        .add-user {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <div class="container mx-auto mt-10">
-        <h2 class="text-center text-2xl font-bold">Dashboard</h2>
-        <div class="mb-4">
-            <a href="{{ url_for('add_user') }}" class="bg-green-500 text-white py-2 px-4 rounded">Add User</a>
-            <a href="{{ url_for('logout') }}" class="bg-red-500 text-white py-2 px-4 rounded">Logout</a>
+
+<body>
+    <div class="container">
+        <h1>User Dashboard</h1>
+        <div class="add-user">
+            <a href="/add_user" class="btn">Add User</a>
         </div>
-        <table class="table-auto w-full bg-white rounded shadow-md">
+        <table>
             <thead>
                 <tr>
-                    <th class="px-4 py-2">ID</th>
-                    <th class="px-4 py-2">Username</th>
-                    <th class="px-4 py-2">Actions</th>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for user in users %}
                 <tr>
-                    <td class="border px-4 py-2">{{ user.id }}</td>
-                    <td class="border px-4 py-2">{{ user.username }}</td>
-                    <td class="border px-4 py-2">
-                        <a href="{{ url_for('edit_user', user_id=user.id) }}" class="bg-yellow-500 text-white py-1 px-3 rounded">Edit</a>
-                        <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST" style="display: inline-block;">
-                            <button type="submit" class="bg-red-500 text-white py-1 px-3 rounded">Delete</button>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td class="action-buttons">
+                        <a href="/edit_user/{{ user.id }}" class="btn">Edit</a>
+                        <form action="/delete_user/{{ user.id }}" method="POST" style="display: inline;">
+                            <button type="submit" class="btn btn-delete">Delete</button>
                         </form>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <a href="/logout" class="btn logout-btn">Logout</a>
     </div>
 </body>
+
 </html>
