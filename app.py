@@ -18,7 +18,7 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
-    
+
 @app.route('/')
 def home():
     return redirect(url_for('login'))
@@ -79,13 +79,15 @@ def dashboard():
     users = User.query.all()
     return render_template('dashboard.html', users=users)
 
-
 @app.route('/add_default_user')
 def add_default_user():
-    new_user = User(username='john_doe', email='john@example.com', role='admin', password_hash=generate_password_hash('password123', method='sha256'))
-    db.session.add(new_user)
-    db.session.commit()
-    return "Default user added successfully!"
+    if not User.query.filter_by(username='john_doe').first():
+        new_user = User(username='john_doe', email='john@example.com', role='admin',
+                        password_hash=generate_password_hash('password123', method='sha256'))
+        db.session.add(new_user)
+        db.session.commit()
+        return "Default user added successfully!"
+    return "Default user already exists."
 
 @app.route('/users')
 def get_users():
@@ -94,17 +96,15 @@ def get_users():
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
 def delete_user(user_id):
+    if 'user_id' not in session or session.get('role') != 'admin':
+        flash('Access denied!', 'danger')
+        return redirect(url_for('dashboard'))
+
     user = User.query.get_or_404(user_id)
     db.session.delete(user)
     db.session.commit()
     flash('User deleted successfully!', 'success')
     return redirect(url_for('dashboard'))
-
-@app.route('/logout')
-def logout():
-    session.pop('user_id', None)
-    flash('You have been logged out.', 'success')
-    return redirect(url_for('login'))
 
 @app.route('/add', methods=['GET', 'POST'])
 def add_user():
@@ -132,7 +132,6 @@ def edit_user(id):
     if 'user_id' not in session or session.get('role') != 'admin':
         flash('Access denied!', 'danger')
         return redirect(url_for('dashboard'))
-
     user = User.query.get_or_404(id)
 
     if request.method == 'POST':
@@ -149,18 +148,6 @@ def edit_user(id):
         return redirect(url_for('dashboard'))
 
     return render_template('edit.html', user=user)
-
-@app.route('/delete/<int:id>', methods=['POST'])
-def delete_user(id):
-    if 'user_id' not in session or session.get('role') != 'admin':
-        flash('Access denied!', 'danger')
-        return redirect(url_for('dashboard'))
-
-    user = User.query.get_or_404(id)
-    db.session.delete(user)
-    db.session.commit()
-    flash('User deleted successfully!', 'success')
-    return redirect(url_for('dashboard'))
 
 @app.route('/logout')
 def logout():
