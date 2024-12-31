@@ -28,8 +28,8 @@
             padding: 20px 10px;
             background-color: rgba(216, 123, 190, 0.68);
             margin: auto;
-            border-radius: 5px;
-            border: 2px solid rgb(67, 58, 58);
+            border-radius: 10px;
+            box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
         }
 
         .a8 {
@@ -55,13 +55,13 @@
     <h1 style="color: black;">Edit User</h1>
     <div class="a6">
         <form action="/edit_user/{{ user.id }}" method="POST">
-            <h2 style="text-align: center; color: black;">Edit User Information</h2>
+            <h2 style="text-align: center; color: white;">Edit User Information</h2>
             <div>
-                <label for="username" style="color: black;">Username:</label> <br>
+                <label for="username" style="color: white;">Username:</label> <br>
                 <input type="text" required id="username" name="username" class="a3"> <br>
             </div>
             <div>
-                <label for="password" style="color: black;">New Password (optional):</label> <br>
+                <label for="password" style="color: white;">New Password (optional):</label> <br>
                 <input type="password" id="password" name="password" class="a3"> <br>
             </div>
             <br>
